@@ -1,6 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
-import { User } from "@prisma/client";
+import { NewUser } from "@prisma/client";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PrismaService } from "src/prisma.service";
 import { Injectable } from "@nestjs/common/decorators";
@@ -19,8 +19,8 @@ export class  JwtStrategy extends PassportStrategy(Strategy){
         });
     };
 
-    async validate({id}: Pick<User,'id'>){
-     return this.prisma.user.findUnique( {where:{id: +id}})
+    async validate({id}: Pick<NewUser,'id'>){
+     return this.prisma.newUser.findUnique( {where:{id: +id}})
     }; 
     
    

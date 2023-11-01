@@ -1,8 +1,8 @@
-import { IsString,MinLength } from "class-validator"
+import { IsNumber, IsString,MinLength } from "class-validator"
 
 export class AuthDto {
-   @IsString() 
-  name:       string  
+  @IsString()      
+   name:       string  
   @IsString()      
   email:      string
   @IsString()       

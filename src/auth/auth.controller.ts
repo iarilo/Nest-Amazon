@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
-import { User } from '@prisma/client';
+import { AuthRefrehTokenDto } from './dto/auth.refreshToken.dto';
+import { NewUser } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +24,24 @@ export class AuthController {
   @Post('registr')
   async RegistrUser(@Body() dto: AuthDto) {
     return this.authService.registrUser(dto);
+  };
+
+  // Логин
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('login')
+  async Login(@Body() dto: NewUser){
+    return this.authService.login(dto)
   }
+
+  // acssesToken
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('login/access-tocen')
+  async GetNewToken(@Body() dto:AuthRefrehTokenDto) {
+    return this.authService.getNewToken(dto)
+  }
+
 
   //Показать всех пользователе
   @Get('all')
@@ -48,5 +66,7 @@ export class AuthController {
   async FindOne(@Param('id') id: string){
   return this.authService.findOne(+id)
   }
+
+  
 
 }

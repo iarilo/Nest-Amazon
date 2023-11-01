@@ -1,9 +1,16 @@
-import { BadRequestException, Delete, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Delete,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { AuthDto } from './dto/auth.dto';
-import { hash } from 'argon2';
+import { hash, verify } from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { NewUser } from '@prisma/client';
+import { AuthRefrehTokenDto } from './dto/auth.refreshToken.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,21 +18,44 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly jwt: JwtService,
   ) {}
-
-  async registrUser(dto: AuthDto) {
-    const oldUser = await this.prismaService.user.findUnique({
+  // -------------------------------------------------------
+  //Поиск пользователя
+  async OldUser(dto: AuthDto) {
+    const user = await this.prismaService.newUser.findUnique({
       where: {
         email: dto.email,
       },
     });
+    return user;
+  }
 
+  // Вывожу  только необходимые поля
+  private returnUserFilds(user: NewUser) {
+    return {
+      id: user.id,
+      email: user.email,
+    };
+  }
+
+  // Показываю нужные поля и токены
+  async Resultat(id: number, user: NewUser) {
+    const token = await this.issueTokens(id);
+    return { ...token, user: this.returnUserFilds(user) };
+  }
+
+  //-----------------------------------------------------------
+
+  //Регистрация
+  async registrUser(dto: AuthDto) {
+    //Поиск пользователя
+    const oldUser = await this.OldUser(dto);
     if (oldUser) {
       throw new BadRequestException(
         'Пользователь с таким email уже существует',
       );
     }
 
-    const newUser = await this.prismaService.user.create({
+    const user = await this.prismaService.newUser.create({
       data: {
         name: dto.name,
         email: dto.email,
@@ -34,40 +64,82 @@ export class AuthService {
         password: await hash(dto.password),
       },
     });
-
-    const token = await this.issueTokens(newUser.id);
-
-    return { ...token, user: this.returnUserFilds(newUser) };
+    // Показываю нужные поля и токены
+    return this.Resultat(user.id, user);
   }
-  //Получаю token
+
+  // ----------------------------------------------------------
+
+  //Создаю token
   private async issueTokens(userId: number) {
     const data = { id: userId };
     const accesToken = this.jwt.sign(data, { expiresIn: '1h' });
     const refreshToken = this.jwt.sign(data, { expiresIn: '30d' });
-    // return [accesToken, refreshToken];
     return [{ accesToken: accesToken }, { refreshToken: refreshToken }];
   }
-  // Вывожу  только необходимые поля
-  private returnUserFilds(user: User) {
-    return {
-      id: user.id,
-      email: user.email,
-    };
+
+  // ---------------------------------------------------------------
+  //Валидация пользователя
+
+  private async validateUser(dto: AuthDto) {
+    // Получаю пользователя
+    //Поиск пользователя
+    const User = await this.OldUser(dto);
+    if (!User) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+    //--------------------------------------------------------------------
+    // Проверяю пароль     verify from 'argon2'
+    const isValid = await verify(User.password, dto.password);
+    if (!isValid) {
+      throw new UnauthorizedException('Пароль не подходит');
+    }
+
+    return User;
   }
+  //-------------------------------------------------------------------
+  // Логин
+
+  async login(dto: NewUser) {
+    const userlogin = await this.validateUser(dto);
+    // Показываю нужные поля и токены
+    return this.Resultat(userlogin.id, userlogin);
+  }
+
+  // --------------------------------------------------------------------
+  // acssesToken
+  async getNewToken(dto: AuthRefrehTokenDto) {
+    // Проверяю токен , получаю id
+    const result = await this.jwt.verifyAsync(dto.refreshToken);
+    if (!result) {
+      throw new UnauthorizedException('Не прошёл token');
+    }
+
+    //Получаю user по id
+    const user = await this.prismaService.newUser.findUnique({
+      where: { id: result.id },
+    });
+
+    //Возврощаю token
+    // Показываю нужные поля и токены
+    return this.Resultat(user.id, user);
+  }
+
+  // ----------------------------------------------------
 
   //Показать всех пользователей
   async allUser() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.newUser.findMany();
   }
 
   // Удалить
   async deleteUser(id: number) {
-    return this.prismaService.user.delete({ where: { id } });
+    return this.prismaService.newUser.delete({ where: { id } });
   }
 
   // Обновление
   async updateUser(id: number, dto: AuthDto) {
-    return this.prismaService.user.update({
+    return this.prismaService.newUser.update({
       where: { id },
       data: dto,
     });
@@ -75,6 +147,6 @@ export class AuthService {
 
   //Поиск по id
   async findOne(id: number) {
-    return this.prismaService.user.findUnique({ where: { id } });
+    return this.prismaService.newUser.findUnique({ where: { id } });
   }
 }
