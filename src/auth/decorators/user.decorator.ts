@@ -11,3 +11,12 @@ export const CurrentUser = createParamDecorator(
      console.log('Data-CurrentUser: ', data)
      return data ? user[data] : user;   
     })
+
+    // export const User = createParamDecorator(
+    //     (data: string, ctx: ExecutionContext) => {
+    //       const request = ctx.switchToHttp().getRequest();
+    //       const user = request.user;
+      
+    //       return data ? user?.[data] : user;
+    //     },
+    //   );
