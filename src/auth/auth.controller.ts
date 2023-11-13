@@ -44,10 +44,10 @@ export class AuthController {
 
 
   //Показать всех пользователе
-  @Get('all')
-  async AllUser() {
-    return this.authService.allUser();
-  }
+  // @Get('all')
+  // async AllUser() {
+  //   return this.authService.allUser();
+  // }
 
   // Удалить
   @Delete(':id')

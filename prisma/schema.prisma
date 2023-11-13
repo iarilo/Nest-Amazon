@@ -24,6 +24,8 @@ model NewUser {
 
   orders      Order[]
   review      Review[]
+  favorites   Product[]
+ 
 
 }
 
@@ -43,6 +45,9 @@ model Product{
 
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  Int      @map("category_id")
+
+  newuser      NewUser @relation(fields: [newuserId], references: [id])
+  newuserId    Int     @map("newuser_id") 
  
 }
 
