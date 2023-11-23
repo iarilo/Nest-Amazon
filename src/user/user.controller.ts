@@ -9,7 +9,7 @@ import { UserDto } from './dto/user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {};
 
-//Получаю профиль
+//
 @Get('profile')
 @Auth()
 async getProfile(@CurrentUser('id') id: number){
@@ -20,7 +20,7 @@ async getProfile(@CurrentUser('id') id: number){
 @UsePipes(new ValidationPipe())
 @HttpCode(200)
 @Auth()
-@Put('profil')
+@Put('profile')
 async getNewTokens(@CurrentUser('id') id: number, @Body() dto: UserDto){
   return this.userService.updateProfile(id, dto)
 }
@@ -30,10 +30,19 @@ async getNewTokens(@CurrentUser('id') id: number, @Body() dto: UserDto){
 @Auth()
 @Patch('profile/favorites/:productId')
 async toggleFavorite( 
-  @CurrentUser('id') id: number, @Param('productId') productId:string ){
-return this.userService.toggleFavorite(id, productId)
-}
+  @CurrentUser('id') id: number,
+  @Param('productId') productId:string 
+  ){
+    
+return this.userService.toggleFavorite(id, +productId)
+};
 
+
+@Get('product')
+@Auth()
+async productUser(@CurrentUser('id') id: number){
+  return this.userService.userProduct(id)
+}
 
 
 }

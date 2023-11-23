@@ -128,9 +128,9 @@ export class AuthService {
   // ----------------------------------------------------
 
   //Показать всех пользователей
-  // async allUser() {
-  //   return this.prismaService.newUser.findMany();
-  // }
+  async allUser() {
+    return this.prismaService.newUser.findMany();
+  }
 
   // Удалить
   async deleteUser(id: number) {

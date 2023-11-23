@@ -15,7 +15,7 @@ model NewUser {
   createAt    DateTime @default(now()) @map("create_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  name         String @default("")
+  name         String @unique
   email        String @unique
   avatarPath   String @default("/uploads/default-avatar.png") @map("avatar_path")
   phone        String @default("")
@@ -43,12 +43,13 @@ model Product{
   orderItems  OrderItem[]
   reviews     Review[]
 
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int      @map("category_id")
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?      @map("category_id")
 
-  newuser      NewUser @relation(fields: [newuserId], references: [id])
-  newuserId    Int     @map("newuser_id") 
  
+  newuser      NewUser? @relation(fields: [newuserId], references: [id])
+  newuserId    Int?     @map("newuser_id") 
+
 }
 
 model Category{
@@ -56,7 +57,8 @@ model Category{
   createAt    DateTime @default(now()) @map("create_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  name String  @unique
+  name        String  @unique
+  slug        String @unique//путь к продукту
 
   products    Product[]
 
