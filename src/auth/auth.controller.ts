@@ -34,6 +34,14 @@ export class AuthController {
     return this.authService.login(dto)
   }
 
+    // Получаю токен по id
+    @Get('tokenById/:id')
+    async TokenById(@Param('id') id: string){
+      return this.authService.tokenById(+id)
+      };
+       
+
+
   // acssesToken
   @UsePipes(new ValidationPipe())
   @HttpCode(200)

@@ -26,6 +26,8 @@ export class AuthService {
         email: dto.email,
       },
     });
+
+  
     return user;
   }
 
@@ -55,8 +57,9 @@ export class AuthService {
       );
     }
 
+    
     const user = await this.prismaService.newUser.create({
-      data: {
+      data: {        
         name: dto.name,
         email: dto.email,
         avatarPath: dto.avatarPath,
@@ -67,6 +70,8 @@ export class AuthService {
     // Показываю нужные поля и токены
     return this.Resultat(user.id, user);
   }
+
+  
 
   // ----------------------------------------------------------
 
@@ -79,6 +84,15 @@ export class AuthService {
   }
 
   // ---------------------------------------------------------------
+   // Получаю токен по id
+
+   async tokenById(id: number){
+   return this.issueTokens(id)
+   };
+    
+
+  // ---------------------------------------------------------------
+
   //Валидация пользователя
 
   private async validateUser(dto: AuthDto) {
@@ -129,7 +143,10 @@ export class AuthService {
 
   //Показать всех пользователей
   async allUser() {
-    return this.prismaService.newUser.findMany();
+   return this.prismaService.newUser.findMany();
+
+
+    
   }
 
   // Удалить

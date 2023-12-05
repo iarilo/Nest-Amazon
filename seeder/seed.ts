@@ -24,17 +24,17 @@ const createProduct = async (quatity: number) => {
     const newProduct = await prisma.product.create({
       data: {
         name: productName,
-        slug: faker.helpers.slugify(productName),
+        slug: faker.helpers.slugify(productName).toLowerCase(),
         descrition: faker.commerce.productDescription(),
         prise: +faker.commerce.price({ min: 10, max: 999, dec: 0 }),
         images: Array.from({
           length: faker.number.float({ min: 2, max: 6 }),
-        }).map(() => faker.image.url()),
+        }).map(() => faker.image.url({width:500, height:500})),
 
         category: {
           create: {
             name: categoryName,
-            slug:  faker.helpers.slugify(productName),
+            slug:  faker.helpers.slugify(productName).toLowerCase(),
           },
         },
         reviews: {
@@ -46,7 +46,7 @@ const createProduct = async (quatity: number) => {
              
               newuser: {
                 connect: {
-                  id: 16,
+                  id: 14,
                 },
               },
             },
@@ -57,7 +57,7 @@ const createProduct = async (quatity: number) => {
              
               newuser: {
                 connect: {
-                  id: 16,
+                  id: 15,
                 },
               },
             },

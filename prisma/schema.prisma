@@ -20,6 +20,7 @@ model NewUser {
   avatarPath   String @default("/uploads/default-avatar.png") @map("avatar_path")
   phone        String @default("")
   password     String @unique
+  
 
 
   orders      Order[]
@@ -106,7 +107,7 @@ model OrderItem {
   product      Product @relation(fields: [productId], references: [id])
   productId    Int     @map("product_id") 
 
-
+@@map("Order_item ")
 }
 
  enum EnumOrderStatus {

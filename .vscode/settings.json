@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "forin"
-    ]
+    ],
+    //Format
+    "source.addMissingImports": true,
+    "source.organizeImports": true
 }
