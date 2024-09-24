@@ -35,10 +35,17 @@ export class ReviewController {
   async CreateReview(
     @CurrentUser('id') id: number,
     @Body() dto: ReviewDto,
-    @Param('productId') productId: string,
+    @Param() paramId: string,
   ) {
-    return this.reviewService.createReview(id, dto, +productId);
+     const idNumber = Object.values(paramId)
+     return this.reviewService.createReview(id, dto, +idNumber);
   }
+
+  @Get('avarege-by-product/:productId')
+  async getAvaregeByProduct(@Param('productId') productId: string) {
+    return this.reviewService.getAverageValueByProductId(+productId);
+  }
+
 }
 
 

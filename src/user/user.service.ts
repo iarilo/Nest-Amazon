@@ -15,6 +15,52 @@ export class UserService {
 
   //Получаю профиль
   //  Prisma.NewUserSelect даёт возможность получать поля которых сейчас нет
+
+  async byId(id: number, selectObject: Prisma.NewUserSelect = {}) {
+    // Поиск  user по id
+    const user = await this.prismaService.newUser.findUnique({
+      // Поиск
+      where: { id },
+      // Разворачиваю связи и указываю  поля
+      select: {
+        //  Поля для  NewUser
+        ...ReturnUserObject,
+        favorites: {
+          //  Поля для favorites
+          select: {
+            id: true,
+            name: true,
+            descrition: true,
+            prise: true,
+            images: true,
+            slug: true,
+            category:{
+              select:{
+                slug:true
+              
+            
+          }
+        },
+        reviews: true,
+      }
+    },
+        
+        ...selectObject,
+      },
+
+      //  include  Разворачиваю связи ( внедрён в select )
+      //  include: {favorites: true}
+    });
+
+    if (!user) {
+      throw new Error('Отсутствует пользователь (UserService - byId ) ');
+    }
+    return user;
+  }
+
+
+  // ====================================
+  /*
   async byId(id: number, selectObject: Prisma.NewUserSelect = {}) {
     // Поиск  user по id
     const user = await this.prismaService.newUser.findUnique({
@@ -54,6 +100,9 @@ export class UserService {
     }
     return user;
   }
+    */
+
+  // ====================================================
 
   // Обновление профиля
   async updateProfile(id: number, dto: UserDto) {

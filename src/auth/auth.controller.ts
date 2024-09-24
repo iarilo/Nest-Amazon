@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -15,13 +16,14 @@ import { AuthDto } from './dto/auth.dto';
 import { AuthRefrehTokenDto } from './dto/auth.refreshToken.dto';
 import { NewUser } from '@prisma/client';
 
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post('registr')
+  @Post('register')
   async RegistrUser(@Body() dto: AuthDto) {
     return this.authService.registrUser(dto);
   };
@@ -30,7 +32,7 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
   @Post('login')
-  async Login(@Body() dto: NewUser){
+  async Login( @Body() dto: NewUser){
     return this.authService.login(dto)
   }
 

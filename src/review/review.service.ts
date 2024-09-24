@@ -13,7 +13,7 @@ export class ReviewService {
   constructor(private readonly prismaServer: PrismaService) {}
 
   async createReview(id: number, dto: ReviewDto, productId: number) {
-    return this.prismaServer.review.create({
+     return this.prismaServer.review.create({
       // Указываю поля review
       data: {
         ...dto,
@@ -31,6 +31,8 @@ export class ReviewService {
         },
       },
     });
+
+
   }
 
   async allReview() {
@@ -53,6 +55,8 @@ export class ReviewService {
       }) // data._avg  получает число 
       .then((data) => data._avg);
   };
+
+ 
 };
 
 

@@ -11,12 +11,13 @@ export const ReturnProductObject: Prisma.ProductSelect = {
   descrition: true,
   prise: true,
   images: true,
+  category: { select: returnCategoryObject },
+  reviews: { select: ReturnReviewObject },
 };
 
 // Все данные о товаре
 
 export const ReturnProductObjectFullest: Prisma.ProductSelect = {
   ...ReturnProductObject,
-  reviews: { select: ReturnReviewObject },
-  category: { select: returnCategoryObject },
+ 
 };
