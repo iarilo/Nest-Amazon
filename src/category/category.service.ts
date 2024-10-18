@@ -13,28 +13,58 @@ import { ReturnProductObjectFullest } from 'src/product/returnProduct.Object';
 @Injectable()
 export class CategoryService {
   constructor(private readonly prismaService: PrismaService) {}
+
+
   // Создание категории
   async createCategory(dto: CategoryDto) {
-    return this.prismaService.category.create({
+  
+  // Получаем максимальный порядок текущих категорий
+    const maxOrder = await this.prismaService.category.aggregate({
+      _max: {
+        order: true,
+      },
+    });
+
+    const newOrder = dto.order ?? (maxOrder._max.order ?? 0) + 1; // Устанавливаем порядок
+      return this.prismaService.category.create({
       data: {
         name: dto.name,
         slug: generateSlug(dto.name),
+        order: newOrder,
       },
     });
+
   }
 
 
- 
-
   //Все категории
   async getAll() {
-    return this.prismaService.category.findMany({
+     const categoryesAll = await  this.prismaService.category.findMany({
       select: {
         ...returnCategoryObject,
         products:{
           select:ReturnProductObjectFullest}
       }
     });
+
+  /*  
+  // Определяем порядок приоритетов
+  const priorityOrder = {
+    toys: 1, // высший приоритет
+    sport: 2, // высокий приоритет
+    footwear: 3, // средний приоритет
+    clothes: 4, // низкий приоритет
+  };
+
+  // Сортируем категории по приоритетам
+  categoryesAll.sort((a, b) => {
+    return (priorityOrder[a.name] || Infinity) - (priorityOrder[b.name] || Infinity);
+  });
+
+  */
+   //console.log('categoryesAll=', categoryesAll);
+     return categoryesAll
+
   }
 
   // Поиск по slug

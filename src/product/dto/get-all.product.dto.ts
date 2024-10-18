@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString } from "class-validator";
+import { isArray, IsEnum, IsOptional, IsString } from "class-validator";
 import { PaginationDto } from "src/pagination/pagination.dto";
 
 // 1) Сортировка по  enum EnumProductSort
@@ -14,6 +14,14 @@ export enum EnumProductSort{
     OLDEST = "oldest"          // Сортировка по старой цене 
 };
 
+
+export enum EnumProductSortCategory{
+    FOOTWEAR ='footwear',
+    TOUS ='toys',
+    CLOTHES ='clothes',
+    SPORT = 'sport'   
+  }
+
 export class GetAllProductDto extends PaginationDto {
 
 @IsOptional() 
@@ -24,4 +32,15 @@ sort?: EnumProductSort; // Сортировка
 @IsString()
 searchTerm?: string // Поиск по ключевому слову
 
+//@isArray()
+@IsOptional()
+@IsString({ each: true })
+categorySort?: string[] 
+
+
+@IsOptional()
+@IsString({ each: true })
+//@IsEnum(EnumProductSortCategory)
+// typeCategory?:EnumProductSortCategory
+typeCategory?:string
 };
