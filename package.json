@@ -21,6 +21,7 @@
     "seed": "ts-node seeder/seed.ts"
   },
   "dependencies": {
+    "@edribeiro/checkout-server-sdk": "^1.0.9",
     "@faker-js/faker": "^8.3.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",

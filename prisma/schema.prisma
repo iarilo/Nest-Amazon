@@ -90,6 +90,8 @@ model Order {
 
   items        OrderItem[]
 
+  total      Int  @default(0)
+
   newuser      NewUser @relation(fields: [newuserId], references: [id],onDelete: Cascade)
   newuserId    Int     @map("newuser_id") 
 }
