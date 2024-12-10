@@ -4,6 +4,9 @@ import { ProductController } from './product.controller';
 import { PrismaService } from 'src/prisma.service';
 import { PaginationService } from 'src/pagination/pagination.service';
 import { CategoryService } from 'src/category/category.service';
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from 'src/auth/auth.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [ProductController],
@@ -11,7 +14,10 @@ import { CategoryService } from 'src/category/category.service';
     ProductService,
     PrismaService,
     PaginationService,
-    CategoryService
-  ],
+    CategoryService,
+    JwtService,
+ ],
+ imports:[AuthModule]
+
 })
 export class ProductModule {}

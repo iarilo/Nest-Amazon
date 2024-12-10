@@ -1,4 +1,5 @@
 import { IsNumber, IsString,MinLength } from "class-validator"
+import { RequestUserDto } from "src/user/dto/user.dto"
 
 export class AuthDto {
   @IsString()      
@@ -12,5 +13,7 @@ export class AuthDto {
   @MinLength(6,{message:'длина пароля не меньше 6 символов'})
   @IsString()         
   password:   string
+
+ 
 
 }

@@ -1,18 +1,22 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Patch, Put, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { Auth } from 'src/auth/decorators/auth.decorators';
-import { UserDto } from './dto/user.dto';
+import { UserDto, UserTokenDto } from './dto/user.dto';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { AuthorizationGuard } from 'src/guards/authorization.guard';
 
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {};
 
-//
+  @UseGuards(AuthenticationGuard,AuthorizationGuard )
 @Get('profile')
-@Auth()
-async getProfile(@CurrentUser('id') id: number){
+//@Auth()
+// async getProfile(@CurrentUser('id') id: number){
+async getProfile(@Req() req:UserTokenDto){
+  const {id} = req.userToken
   return this.userService.byId(id)
 }
 
@@ -42,6 +46,13 @@ return this.userService.toggleFavorite(id, +productId)
 @Auth()
 async productUser(@CurrentUser('id') id: number){
   return this.userService.userProduct(id)
+}
+
+@UseGuards(AuthenticationGuard,AuthorizationGuard )
+@Get('userTest')
+async reqUserTest(@Req() req){
+  return this.userService.userTest(req)
+  //console.log('reqUserTest - req =',req)
 }
 
 

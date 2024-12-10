@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { UserDto } from './dto/user.dto';
+import { RequestUserDto, UserDto, UserTokenDto } from './dto/user.dto';
 import { ReturnUserObject } from './return.user.Object';
 import { Prisma } from '@prisma/client';
 import { hash } from 'argon2';
@@ -16,8 +16,10 @@ export class UserService {
   //Получаю профиль
   //  Prisma.NewUserSelect даёт возможность получать поля которых сейчас нет
 
-  async byId(id: number, selectObject: Prisma.NewUserSelect = {}) {
+   async byId(id: number, selectObject: Prisma.NewUserSelect = {}) {
+  //async byId(req:UserTokenDto, selectObject: Prisma.NewUserSelect = {}) {
     // Поиск  user по id
+   
     const user = await this.prismaService.newUser.findUnique({
       // Поиск
       where: { id },
@@ -44,6 +46,7 @@ export class UserService {
         reviews: true,
       }
     },
+    role:true, 
         
         ...selectObject,
       },
@@ -55,6 +58,8 @@ export class UserService {
     if (!user) {
       throw new Error('Отсутствует пользователь (UserService - byId ) ');
     }
+
+    //console.log('User Profile =',user)
     return user;
   }
 
@@ -177,6 +182,13 @@ export class UserService {
         favorites: true
       }
     })
+  }
+
+  async userTest(req:UserTokenDto){
+    const{id} = req.userToken
+    console.log('Req - id =',id)
+  
+return {message:'Пользователь из req получен ',ID: id, requestUser:req.userToken}
   }
 
 };

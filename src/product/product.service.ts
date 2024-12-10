@@ -48,6 +48,9 @@ export class ProductService {
 	async allProduct(dto: GetAllProductDto = {}) {
 		const { sort, searchTerm, categorySort } = dto
 
+		// console.log('sort = ',sort)
+		// console.log('searchTerm = ',searchTerm)
+
 		// sort: значение из enum для сортировки newest,igh-price и тд.
 		// searchTerm: слово для поиска.
 		//categorySort: все слаги категорий['clothes','footwear','toys','sport'] для поиска where в категориях

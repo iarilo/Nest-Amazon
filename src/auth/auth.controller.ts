@@ -61,7 +61,7 @@ export class AuthController {
 
   // Удалить
   @Delete(':id')
-  async DeleteUssr(@Param('id') id: string) {
+  async DeleteUser(@Param('id') id: string) {
     return this.authService.deleteUser(+id);
   }
 
